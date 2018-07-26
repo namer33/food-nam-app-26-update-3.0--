@@ -3,7 +3,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { TextMaskModule } from 'angular2-text-mask';
-
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
@@ -52,6 +54,7 @@ import { DeliveryDetailsComponent } from './components/delivery-details/delivery
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -76,7 +79,6 @@ import { DeliveryDetailsComponent } from './components/delivery-details/delivery
     AboutComponent,
     AdminListComponent,
     DeliveryDetailsComponent
-
   ],
   imports: [
     TextMaskModule,
@@ -89,7 +91,10 @@ import { DeliveryDetailsComponent } from './components/delivery-details/delivery
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,  // offline  // .enablePersistence()
-    FlashMessagesModule
+    FlashMessagesModule,
+    ModalModule.forRoot(),
+    TabsModule.forRoot(),
+    CarouselModule.forRoot()
   ],
   providers: [
     DeliveryService,

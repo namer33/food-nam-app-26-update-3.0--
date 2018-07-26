@@ -5,6 +5,10 @@ import { UserService } from '../../service/user.service';
 import { Router } from '@angular/router';
 import { Order, User } from '../../models/interface';
 import { FlashMessagesService } from 'angular2-flash-messages';
+import { HomeComponent } from '../../home/home.component';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+
 
 @Component({
   selector: 'app-checkout',
@@ -12,13 +16,10 @@ import { FlashMessagesService } from 'angular2-flash-messages';
   styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent implements OnInit {
-  @ViewChild('closeBtn') closeBtn: ElementRef;
-  @ViewChild('btn') btn: ElementRef;
-  @ViewChild('btn1') btn1: ElementRef;
+  @ViewChild('confirm') confirmEl: ElementRef;
+  modalRef: BsModalRef;
 
 
-  email = '';
-  password = '';
   orders: Order[];
   isLoad: boolean;
   isdisabled = '';
@@ -52,17 +53,18 @@ export class CheckoutComponent implements OnInit {
   // totalMask = [/[0-9]/, ',', /\d/, /\d/, ',', /\d/, /\d/, /\d/];
 
   constructor(
+    private modalService: BsModalService,
     private userService: UserService,
     private cartService: CartService,
     private orderService: OrderService,
     private router: Router,
-    public flashMessages: FlashMessagesService
+    public flashMessages: FlashMessagesService,
+    private home: HomeComponent
   ) { }
 
   ngOnInit() {
     this.cartService.loadCart();
   }
-
 
   _orders() {
     this.orderService.getAllOrders().
@@ -83,14 +85,15 @@ export class CheckoutComponent implements OnInit {
       }, 2000);
       return;
     } else {
-      console.log('02');
-      this.btn.nativeElement.click();
+      console.log('confirmEl');
+      this.modalRef = this.modalService.show(this.confirmEl);
       this.isdisabled = '';
     }
   }
 
 
   onClickAddOrder() {
+    this.modalRef.hide();
     this.isLoad = true;
     this.order.idUser = this.userService.authState.uid;
     this.order.date = (new Date()).getTime();
@@ -115,64 +118,6 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-  }
-
-
-  onSignUp() {
-    this.isdisabled = 'true';
-    if (this.email === '' || this.password === '') {
-      this.isLoad = false;
-      this.flashMessages.show('โปรดใส่ข้อมูลให้ครบ!', { cssClass: 'alert-danger', timeout: 2000 });
-      setTimeout(() => {
-        this.isdisabled = '';
-      }, 2100);
-      return;
-    }
-    this.isLoad = true;
-    this.userService.signUp(this.email, this.password)
-      .then((res) => {
-        this.closeBtn.nativeElement.click();
-        this.isLoad = false;
-        this.isdisabled = '';
-      }).catch((err) => {
-        this.isLoad = false;
-        this.flashMessages.show(err, { cssClass: 'alert-danger', timeout: 2000 });
-        setTimeout(() => {
-          this.isdisabled = '';
-        }, 2100);
-      });
-  }
-
-
-  onSignIn() {
-    this.isdisabled = 'true';
-    if (this.email === '' || this.password === '') {
-      this.isLoad = false;
-      this.flashMessages.show('โปรดใส่ข้อมูลให้ครบ!', { cssClass: 'alert-danger', timeout: 2000 });
-      setTimeout(() => {
-        this.isdisabled = '';
-      }, 2100);
-      return;
-    }
-    this.isLoad = true;
-    this.userService.signIn(this.email, this.password)
-      .then((res) => {
-        this.closeBtn.nativeElement.click();
-        this.isLoad = false;
-        this.isdisabled = '';
-      }).catch((err) => {
-        this.isLoad = false;
-        this.flashMessages.show(err, { cssClass: 'alert-danger', timeout: 2000 });
-        setTimeout(() => {
-          this.isdisabled = '';
-        }, 2100);
-      });
-  }
-
-
-  onSignOut() {
-    this.userService.signOut();
-    this.userService.userState();
   }
 
 }

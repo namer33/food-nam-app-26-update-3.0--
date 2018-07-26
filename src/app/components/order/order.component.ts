@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { OrderService } from '../../service/order.service';
 import { Router } from '@angular/router';
 import { Order } from '../../models/interface';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Component({
   selector: 'app-order',
@@ -9,11 +11,13 @@ import { Order } from '../../models/interface';
   styleUrls: ['./order.component.css']
 })
 export class OrderComponent implements OnInit {
-  @ViewChild('closeBtnDel') closeBtnDel: ElementRef;
+  @ViewChild('del') delEl: ElementRef;
+  modalRef: BsModalRef;
 
   orders: Order[];
   order: Order;
   constructor(
+    private modalService: BsModalService,
     private orderService: OrderService,
     private router: Router,
   ) { }
@@ -31,12 +35,14 @@ export class OrderComponent implements OnInit {
     delConfirm(value: Order) {
       console.log('value.uid: ' + value.idOrder);
       this.order = value;
+      console.log('delEl');
+      this.modalRef = this.modalService.show(this.delEl);
     }
 
 
   deleteOrder() {
     this.orderService.deleteOrder(this.order);
-    this.closeBtnDel.nativeElement.click();
+    this.modalRef.hide();
   }
 
   viewOrder(order) {

@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CartService } from '../../service/cart.service';
 import { Food } from '../../models/interface';
 import { Router } from '@angular/router';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+
 
 @Component({
   selector: 'app-my-cart',
@@ -9,11 +12,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./my-cart.component.css']
 })
 export class MyCartComponent implements OnInit {
-  @ViewChild('closeBtnDel') closeBtnDel: ElementRef;
-
+  @ViewChild('del') delEl: ElementRef;
+  modalRef: BsModalRef;
   id;
 
   constructor(
+    private modalService: BsModalService,
     private router: Router,
     private cartService: CartService
   ) { }
@@ -39,12 +43,15 @@ export class MyCartComponent implements OnInit {
   // ยืนยันการลบ
   delConfirm(value: Food) {
     this.id = value.idFood;
+    console.log('delEl');
+    this.modalRef = this.modalService.show(this.delEl);
+
   }
 
 
   delete() {  // ลบ 1 รายการ
     this.cartService.remove(this.id);
-    this.closeBtnDel.nativeElement.click();
+    this.modalRef.hide();
     this.gotoFoodList();
   }
 

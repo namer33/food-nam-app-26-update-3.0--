@@ -34,7 +34,7 @@
                       ราคา:&nbsp;&nbsp;&nbsp;{{item.product.price*item.count}}
                     </div>
                     <div class="col-2" style="margin-top: 1.5em;">
-                      <button type="button" class="btn btn-danger" style="width: 3.5em;" data-toggle="modal" data-target="#delModal" (click)="delConfirm(item.product)">ลบ</button>
+                      <button type="button" class="btn btn-danger" style="width: 3.5em;" (click)="delConfirm(item.product)">ลบ</button>
                     </div>
                   </div>
                 </li>
@@ -86,23 +86,17 @@
 
 
   <!-- delModal -->
-  <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content" style="margin: 0.5em;">
-          <div class="modal-body">
-            <div class="row justify-content-center">
-              <div style="text-align: center;">กด 'ตกลง' เพื่อยืนยันการลบ </div>
-              <div *ngIf="isLoad" class="wrap-loading" style="margin-left: 2em;">
-                <div class="loading loading-1"></div>
-              </div>
-            </div>
-            <hr>
-            <div class="row justify-content-center">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal" #closeBtnDel>ปิด</button>
-              <button type="button" class="btn btn-primary" (click)="delete()" style="margin-left: 1em;">ตกลง</button>
-            </div>
-          </div>
-        </div>
+  <ng-template #del>
+    <div class="modal-body">
+      <div class="row justify-content-center">
+        <div style="text-align: center;">กด 'ตกลง' เพื่อยืนยันการลบ </div>
+      </div>
+      <hr>
+      <div class="row justify-content-center">
+        <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">ปิด</button>
+        <button type="button" class="btn btn-primary" (click)="delete()" style="margin-left: 1em;">ตกลง</button>
       </div>
     </div>
+  </ng-template>
+
 </div>

@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AdminService } from '../../service/admin.service';
 import { Admin } from '../../models/interface';
 import { FlashMessagesService } from 'angular2-flash-messages';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+
 
 @Component({
   selector: 'app-admin',
@@ -9,9 +12,10 @@ import { FlashMessagesService } from 'angular2-flash-messages';
   styleUrls: ['./admin-list.component.css']
 })
 export class AdminListComponent implements OnInit {
-  @ViewChild('closeBtn') closeBtn: ElementRef;
-  @ViewChild('closeBtnEdit') closeBtnEdit: ElementRef;
-  @ViewChild('closeBtnDel') closeBtnDel: ElementRef;
+  @ViewChild('create') createEl: ElementRef;
+  @ViewChild('edit') editEl: ElementRef;
+  @ViewChild('del') delEl: ElementRef;
+  modalRef: BsModalRef;
 
   admin: Admin = {
     idAdmin: '',
@@ -52,6 +56,7 @@ export class AdminListComponent implements OnInit {
 
 
   constructor(
+    private modalService: BsModalService,
     private adminService: AdminService,
     private flashMessages: FlashMessagesService
   ) { }
@@ -101,6 +106,8 @@ export class AdminListComponent implements OnInit {
     this.cls();
     this.adminService.getUid();
     console.log('this.admin.email: ' + this.admin.email);
+    console.log('createEl');
+    this.modalRef = this.modalService.show(this.createEl);
   }
 
 
@@ -150,6 +157,8 @@ export class AdminListComponent implements OnInit {
     this.id = value.idAdmin;
     this.admin = value;
     this.adminService.getUid();
+    console.log('delEl');
+    this.modalRef = this.modalService.show(this.delEl);
   }
 
 
@@ -161,7 +170,7 @@ export class AdminListComponent implements OnInit {
       .then(() => {
         this.adminService.reSignInAdmins()
           .then(() => {
-            this.closeBtnDel.nativeElement.click();
+            this.modalRef.hide();
             this.isdisabled = '';
             this.isLoad = false;
           });
@@ -188,6 +197,8 @@ export class AdminListComponent implements OnInit {
     this.tel = admin.tel;
     this.url = admin.photoURL;
     this.selectedFile = null;
+    console.log('editEl');
+    this.modalRef = this.modalService.show(this.editEl);
   }
 
 
@@ -247,7 +258,7 @@ export class AdminListComponent implements OnInit {
   // call this wherever you want to close modal
   private closeModal(): void {
     console.log('closeModal');
-    this.closeBtn.nativeElement.click();
+    this.modalRef.hide();
   }
 
 
@@ -267,7 +278,7 @@ export class AdminListComponent implements OnInit {
 
   private closeModalEdit(): void {
     console.log('closeModaledit');
-    this.closeBtnEdit.nativeElement.click();
+    this.modalRef.hide();
     this.clsEdit();
   }
 

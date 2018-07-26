@@ -41,17 +41,6 @@
   -ms-animation: spin 750ms infinite linear;
 }
 
-.loading {
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  animation: spin 750ms infinite linear;
-  -webkit-animation: spin 750ms infinite linear;
-  -moz-animation: spin 750ms infinite linear;
-  -o-animation: spin 750ms infinite linear;
-  -ms-animation: spin 750ms infinite linear;
-}
 .loading-1 {
   width: 24px;
   height: 24px;
@@ -111,4 +100,5 @@
     -ms-transform: rotate(360deg);
             transform: rotate(360deg);
   }
+
 }

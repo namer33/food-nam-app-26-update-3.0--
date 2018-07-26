@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FoodService } from '../../service/food.service';
 import { Food, Category } from '../../models/interface';
 import { FlashMessagesService } from 'angular2-flash-messages';
-
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Component({
   selector: 'app-food',
@@ -10,10 +11,10 @@ import { FlashMessagesService } from 'angular2-flash-messages';
   styleUrls: ['./food.component.css']
 })
 export class FoodComponent implements OnInit {
-  @ViewChild('closeBtn') closeBtn: ElementRef;
-  @ViewChild('closeBtnEdit') closeBtnEdit: ElementRef;
-  @ViewChild('closeBtnDel') closeBtnDel: ElementRef;
-
+  @ViewChild('create') createEl: ElementRef;
+  @ViewChild('edit') editEl: ElementRef;
+  @ViewChild('del') delEl: ElementRef;
+  modalRef: BsModalRef;
 
   food: Food = {
     idFood: '',
@@ -45,6 +46,7 @@ export class FoodComponent implements OnInit {
 
 
   constructor(
+    private modalService: BsModalService,
     private foodService: FoodService,
     private flashMessages: FlashMessagesService
   ) { }
@@ -99,6 +101,8 @@ export class FoodComponent implements OnInit {
     this.flash = 'true';
     this.flash2 = '';
     this.cls();
+    console.log('createEl');
+    this.modalRef = this.modalService.show(this.createEl);
   }
 
   onClickAddFood({ value }: { value: Food }) {
@@ -130,13 +134,15 @@ export class FoodComponent implements OnInit {
     this.id = value.idFood;
     this.isdisabled = '';
     this.isLoad = false;
+    console.log('delEl');
+    this.modalRef = this.modalService.show(this.delEl);
   }
 
   deleteFood() {
     this.isdisabled = 'true';
     this.isLoad = true;
     this.foodService.deleteFood(this.id);
-    this.closeBtnDel.nativeElement.click();
+    this.modalRef.hide();
   }
 
 
@@ -153,6 +159,8 @@ export class FoodComponent implements OnInit {
     this.status = food.status;
     this.url = food.imageUrl;
     this.selectedFile = null;
+    console.log('editEl');
+    this.modalRef = this.modalService.show(this.editEl);
   }
 
   updateFood({ value }: { value: Food }) { // no
@@ -194,7 +202,7 @@ export class FoodComponent implements OnInit {
   // call this wherever you want to close modal
   private closeModal(): void {
     console.log('closeModal');
-    this.closeBtn.nativeElement.click();
+    this.modalRef.hide();
     this.cls();
   }
 
@@ -214,7 +222,7 @@ export class FoodComponent implements OnInit {
 
   private closeModalEdit(): void {
     console.log('closeModaledit');
-    this.closeBtnEdit.nativeElement.click();
+    this.modalRef.hide();
     this.clsEdit();
   }
 

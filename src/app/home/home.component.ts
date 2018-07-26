@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Observable, Observer } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserService } from '../service/user.service';
 import { CartService } from '../service/cart.service';
 import { FlashMessagesService } from 'angular2-flash-messages';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Component({
   selector: 'app-home',
@@ -11,24 +12,28 @@ import { FlashMessagesService } from 'angular2-flash-messages';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  @ViewChild('closeBtn') closeBtn: ElementRef;
+  @ViewChild('auth') authEl: ElementRef;
+  modalRef: BsModalRef;
 
-  email = '';
-  password = '';
   isLogin: Boolean;
   userEmail: string;
+  email = '';
+  password = '';
   isLoad: boolean;
   isdisabled = '';
 
   constructor(
+    private modalService: BsModalService,
     private userService: UserService,
     private cartService: CartService,
     public router: Router,
     private flashMessages: FlashMessagesService
   ) { }
 
+
+
   ngOnInit() {
-    this.userService.getAuth().subscribe( auth => {
+    this.userService.getAuth().subscribe(auth => {
       if (auth) {
         this.userEmail = auth.email;
       }
@@ -37,6 +42,12 @@ export class HomeComponent implements OnInit {
     this.cartService.loadCart();
   }
 
+
+
+  openAuthModal() {
+    console.log('authEl');
+    this.modalRef = this.modalService.show(this.authEl);
+  }
 
 
 
@@ -53,7 +64,7 @@ export class HomeComponent implements OnInit {
     this.isLoad = true;
     this.userService.signUp(this.email, this.password)
       .then((res) => {
-        this.closeBtn.nativeElement.click();
+        this.modalRef.hide();
         this.isLoad = false;
         this.isdisabled = '';
       }).catch((err) => {
@@ -79,7 +90,7 @@ export class HomeComponent implements OnInit {
     this.isLoad = true;
     this.userService.signIn(this.email, this.password)
       .then((res) => {
-        this.closeBtn.nativeElement.click();
+        this.modalRef.hide();
         this.isLoad = false;
         this.isdisabled = '';
       }).catch((err) => {

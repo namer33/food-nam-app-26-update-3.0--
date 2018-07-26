@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { UserService } from '../../service/user.service';
 import { User } from '../../models/interface';
 import { FlashMessagesService } from 'angular2-flash-messages';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+
 
 @Component({
   selector: 'app-user',
@@ -9,9 +12,10 @@ import { FlashMessagesService } from 'angular2-flash-messages';
   styleUrls: ['./user.component.css']
 })
 export class UserComponent implements OnInit {
-  @ViewChild('closeBtn') closeBtn: ElementRef;
-  @ViewChild('closeBtnEdit') closeBtnEdit: ElementRef;
-  @ViewChild('closeBtnDel') closeBtnDel: ElementRef;
+  @ViewChild('create') createEl: ElementRef;
+  @ViewChild('edit') editEl: ElementRef;
+  @ViewChild('del') delEl: ElementRef;
+  modalRef: BsModalRef;
 
   user: User = {
     idUser: '',
@@ -53,6 +57,7 @@ export class UserComponent implements OnInit {
 
 
   constructor(
+    private modalService: BsModalService,
     private userService: UserService,
     private flashMessages: FlashMessagesService
   ) { }
@@ -102,6 +107,8 @@ export class UserComponent implements OnInit {
     this.cls();
     this.userService.getUid();
     console.log('this.user.email: ' + this.user.email);
+    console.log('createEl');
+    this.modalRef = this.modalService.show(this.createEl);
   }
 
 
@@ -150,6 +157,8 @@ export class UserComponent implements OnInit {
     this.id = value.idUser;
     this.user = value;
     this.userService.getUid();
+    console.log('delEl');
+    this.modalRef = this.modalService.show(this.delEl);
   }
 
 
@@ -161,7 +170,7 @@ export class UserComponent implements OnInit {
       .then(() => {
         this.userService.reSignInAdmins()
           .then(() => {
-            this.closeBtnDel.nativeElement.click();
+            this.modalRef.hide();
             this.isdisabled = '';
             this.isLoad = false;
           });
@@ -187,6 +196,8 @@ export class UserComponent implements OnInit {
     this.tel = user.tel;
     this.url = user.photoURL;
     this.selectedFile = null;
+    console.log('editEl');
+    this.modalRef = this.modalService.show(this.editEl);
   }
 
 
@@ -246,7 +257,7 @@ export class UserComponent implements OnInit {
   // call this wherever you want to close modal
   private closeModal(): void {
     console.log('closeModal');
-    this.closeBtn.nativeElement.click();
+    this.modalRef.hide();
   }
 
 
@@ -266,7 +277,7 @@ export class UserComponent implements OnInit {
 
   private closeModalEdit(): void {
     console.log('closeModaledit');
-    this.closeBtnEdit.nativeElement.click();
+    this.modalRef.hide();
     this.clsEdit();
   }
 

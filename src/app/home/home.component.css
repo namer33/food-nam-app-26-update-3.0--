@@ -1,5 +1,4 @@
 
-
 .wrap-loading {
     position: relative;
   }
@@ -23,7 +22,6 @@
     border: 5px solid #65C3DE;
     border-top-color: rgba(255, 255, 255, 0);
   }
-
 
   @keyframes spin {
     0% {
@@ -74,5 +72,6 @@
       -ms-transform: rotate(360deg);
               transform: rotate(360deg);
     }
+
   }
 

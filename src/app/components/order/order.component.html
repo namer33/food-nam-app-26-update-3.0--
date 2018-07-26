@@ -31,7 +31,7 @@
                 <td>
                   <button type="button" class="btn btn-warning" style="margin: 0.5em;" routerLink="./details/{{order.idOrder}}">รายละเอียด
                   </button>
-                  <button type="button" class="btn btn-danger" style="margin: 0.5em;" data-toggle="modal" data-target="#delModal" (click)="delConfirm(order)">ลบ
+                  <button type="button" class="btn btn-danger" style="margin: 0.5em;" (click)="delConfirm(order)">ลบ
                   </button>
                 </td>
               </tr>
@@ -45,20 +45,19 @@
 </div>
 
 
-<!-- delModal -->
-<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" style="margin: 0.5em;">
-      <div class="modal-body">
-        <div class="row justify-content-center">
-          <div style="text-align: center;">กด 'ตกลง' เพื่อยืนยันการลบ </div>
-        </div>
-        <hr>
-        <div class="row justify-content-center">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" #closeBtnDel>ปิด</button>
-          <button type="button" class="btn btn-primary" (click)="deleteOrder()" style="margin-left: 1em;">ตกลง</button>
+  <!-- delModal -->
+  <ng-template #del>
+    <div class="modal-body">
+      <div class="row justify-content-center">
+        <div style="text-align: center;">กด 'ตกลง' เพื่อยืนยันการลบ </div>
+        <div *ngIf="isLoad" class="wrap-loading" style="margin-left: 2em;">
+          <div class="loading loading-1"></div>
         </div>
       </div>
+      <hr>
+      <div class="row justify-content-center">
+        <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">ปิด</button>
+        <button type="button" class="btn btn-primary" (click)="deleteOrder()" style="margin-left: 1em;">ตกลง</button>
+      </div>
     </div>
-  </div>
-</div>
+  </ng-template>

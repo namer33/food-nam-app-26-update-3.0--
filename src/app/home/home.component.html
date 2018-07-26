@@ -33,7 +33,7 @@
       </a>
     </li>
     <button *ngIf="cartService.countAll == 0" type="button" class="btn btn-primary" routerLink="/food-list">เริ่มสั่งอาหาร</button>
-    <button style="margin-left: 1em;" *ngIf="!userService.authState" type="button" class="btn btn-ghost-success" data-toggle="modal" data-target="#putModal">เข้าสู่ระบบ</button>
+    <button style="margin-left: 1em;" *ngIf="!userService.authState" type="button" class="btn btn-ghost-success" (click)="openAuthModal()">เข้าสู่ระบบ</button>
     <li class="nav-item">
       <a *ngIf="userService.authState" class="nav-link" href="#" (click)="onSignOut()">ออกจากระบบ</a>
     </li>
@@ -46,87 +46,69 @@
 </div>
 
 
-<!-- Modal -->
-<div class="modal fade" id="putModal" tabindex="-1" role="dialog" aria-labelledby="putModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="card text-center">
-          <div class="card-header">
-            <ul class="nav nav-tabs" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#tab1" role="tab">
-                  เข้าสู่ระบบ
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#tab2" role="tab">
-                  สมัครสมาชิก
-                </a>
-              </li>
-            </ul>
+<!-- Auth -->
+<ng-template #auth>
+  <div class="modal-body">
+    <tabset #เข้าสู่ระบบ>
+      <tab heading="เข้าสู่ระบบ">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="icon-envelope"></i>
+            </span>
           </div>
+          <input type="email" name="email" id="email1" [(ngModel)]="email" class="form-control" placeholder="Email">
         </div>
-  
-        <!-- Tab panes-->
-        <div class="tab-content">
-          <div class="tab-pane p-3 active" id="tab1" role="tabpanel">
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="icon-envelope"></i>
-                </span>
-              </div>
-              <input type="email" name="email" id="email1" [(ngModel)]="email" class="form-control" placeholder="Email">
-            </div>
-            <div class="input-group mb-4">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="icon-lock"></i>
-                </span>
-              </div>
-              <input type="password" name="password" id="password1" [(ngModel)]="password" class="form-control" placeholder="Password">
-            </div>
-            <div class="row">
-              <div class="col-4">
-                <button style="display: none;" #closeBtn data-dismiss="modal"></button>
-                <button type="submit" disabled={{isdisabled}} class="btn btn-primary px-4" (click)="onSignIn()">เข้าสู่ระบบ
-                </button>
-              </div>
-              <div class="col-8  text-right">
-                <button type="button" class="btn btn-link px-0">ลืมรหัสผ่าน</button>
-              </div>
-            </div>
-  
+        <div class="input-group mb-4">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="icon-lock"></i>
+            </span>
           </div>
-          <div class="tab-pane p-3" id="tab2" role="tabpanel">
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="icon-envelope"></i>
-                </span>
-              </div>
-              <input type="email" name="email" id="email2" [(ngModel)]="email" class="form-control" placeholder="Email">
-            </div>
-            <div class="input-group mb-4">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="icon-lock"></i>
-                </span>
-              </div>
-              <input type="password" name="password" id="password2" [(ngModel)]="password" class="form-control" placeholder="Password">
-            </div>
+          <input type="password" name="password" id="password1" [(ngModel)]="password" class="form-control" placeholder="Password">
+        </div>
+        <div class="row">
+          <div class="col-4">
             <button style="display: none;" #closeBtn data-dismiss="modal"></button>
-            <button type="submit" disabled={{isdisabled}} class="btn btn-primary px-5" (click)="onSignUp()">ตกลง
+            <button type="submit" disabled={{isdisabled}} class="btn btn-primary px-4" (click)="onSignIn()">เข้าสู่ระบบ
             </button>
-  
+          </div>
+          <div class="col-8  text-right">
+            <button type="button" class="btn btn-link px-0">ลืมรหัสผ่าน</button>
           </div>
         </div>
-      </div>
-      <div *ngIf="isLoad" class="wrap-loading" style="margin-top: 2em;">
-        <div class="loading loading-1"></div>
-      </div>
-      <div class="row justify-content-center" style="margin-top: 1em;">
-        <flash-messages></flash-messages>
-      </div>
-    </div>
+      </tab>
+      <tab heading="สมัครสมาชิก">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="icon-envelope"></i>
+            </span>
+          </div>
+          <input type="email" name="email" id="email2" [(ngModel)]="email" class="form-control" placeholder="Email">
+        </div>
+        <div class="input-group mb-4">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="icon-lock"></i>
+            </span>
+          </div>
+          <input type="password" name="password" id="password2" [(ngModel)]="password" class="form-control" placeholder="Password">
+        </div>
+        <button style="display: none;" #closeBtn data-dismiss="modal"></button>
+        <button type="submit" disabled={{isdisabled}} class="btn btn-primary px-5" (click)="onSignUp()">ตกลง
+        </button>
+      </tab>
+    </tabset>
   </div>
+
+  <!-- load -->
+  <div *ngIf="isLoad" class="wrap-loading" style="margin: 2em;">
+    <div class="loading loading-1"></div>
+  </div>
+  <div class="row justify-content-center" style="margin: 1em;">
+    <flash-messages></flash-messages>
+  </div>
+</ng-template>
+
+

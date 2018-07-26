@@ -6,7 +6,7 @@
       <div class="card-header">
         <div class="row">
           <div class="col-5">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#putModal" data-whatever="@getbootstrap" (click)="addUser()">เพิ่มข้อมูล
+            <button type="button" class="btn btn-success" (click)="addUser()">เพิ่มข้อมูล
             </button>
           </div>
           <div class="col">
@@ -42,10 +42,9 @@
                 <td>{{user.email}}</td>
                 <td>{{user.address}}</td>
                 <td>
-                  <button type="button" class="btn btn-warning" style="margin: 0.5em;" data-toggle="modal" data-target="#editModal" data-whatever="@getbootstrap"
-                    (click)="editUser(user)">แก้ไข
+                  <button type="button" class="btn btn-warning" style="margin: 0.5em;" (click)="editUser(user)">แก้ไข
                   </button>
-                  <button type="button" class="btn btn-danger" style="margin: 0.5em;" data-toggle="modal" data-target="#delModal" (click)="delConfirm(user)">ลบ
+                  <button type="button" class="btn btn-danger" style="margin: 0.5em;" (click)="delConfirm(user)">ลบ
                   </button>
                 </td>
               </tr>
@@ -60,179 +59,160 @@
 
 
   <!-- เพิ่มข้อมูล -->
-  <div id="myModal" class="modal fade" id="putModal" tabindex="0" role="dialog" aria-labelledby="putModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="row justify-content-center">
-            <h5 class="modal-title" id="putModalLabel" style="margin-left: 1em;">เพิ่มข้อมูล</h5>
-            <div *ngIf="isLoad" class="wrap-loading" style="margin-left: 2em;">
-              <div class="loading loading-1"></div>
+  <ng-template #create>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="row justify-content-center">
+          <h5 class="modal-title" id="putModalLabel" style="margin-left: 1em;">เพิ่มข้อมูล</h5>
+          <div *ngIf="isLoad" class="wrap-loading" style="margin-left: 2em;">
+            <div class="loading loading-1"></div>
+          </div>
+        </div>
+      </div>
+      <form #formAdd="ngForm" (ngSubmit)="onClickAddUser(formAdd)">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="email">อีเมลล์</label>
+                <input type="email" class="form-control" id="email" name="email" [(ngModel)]="user.email">
+              </div>
+              <div class="form-group">
+                <label for="password">password</label>
+                <input type="password" class="form-control" id="password" name="password" [(ngModel)]="user.password">
+              </div>
+              <div class="form-group">
+                <label for="fname">ชื่อ</label>
+                <input type="text" class="form-control" id="fname" name="fname" [(ngModel)]="user.fname">
+              </div>
+              <div class="form-group">
+                <label for="lname">นามสกุล</label>
+                <input type="text" class="form-control" id="lname" name="lname" [(ngModel)]="user.lname">
+              </div>
+              <div class="form-group">
+                <label for="tel">เบอร์โทร</label>
+                <input type="text" class="form-control" id="tel" name="tel" [textMask]="{mask: telMask}" [(ngModel)]="user.tel">
+              </div>
+              <div class="form-group">
+                <label for="address">ที่อยู่</label>
+                <textarea class="form-control" id="address" name="address" rows="4" [(ngModel)]="user.address"></textarea>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card" style="height: 10em; margin-top: 1em;">
+                <div class="card-body">
+                  <img *ngIf="url" [src]="url" class="rounded mb-3" width="100em;">
+                </div>
+              </div>
+
+              <input style="display: none" type="file" (change)="addFile($event)" #fileInput>
+              <button type="button" class="btn px-4" (click)="fileInput.click()">เลือกรูปภาพ
+              </button>
+              <div *ngIf="selectedFile?.name" style="margin-top: 1em;">
+                <p>{{selectedFile.name}}</p>
+              </div>
+              <div *ngIf="flash" style="margin-top: 1em;">
+                <flash-messages></flash-messages>
+              </div>
             </div>
           </div>
         </div>
-        <form #formAdd="ngForm" (ngSubmit)="onClickAddUser(formAdd)">
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-6">
-                <div class="form-group">
-                  <label for="email">อีเมลล์</label>
-                  <input type="email" class="form-control" id="email" name="email" [(ngModel)]="user.email">
-                </div>
-                <div class="form-group">
-                  <label for="password">password</label>
-                  <input type="password" class="form-control" id="password" name="password" [(ngModel)]="user.password">
-                </div>
-                <div class="form-group">
-                  <label for="fname">ชื่อ</label>
-                  <input type="text" class="form-control" id="fname" name="fname" [(ngModel)]="user.fname">
-                </div>
-                <div class="form-group">
-                  <label for="lname">นามสกุล</label>
-                  <input type="text" class="form-control" id="lname" name="lname" [(ngModel)]="user.lname">
-                </div>
-                <div class="form-group">
-                  <label for="tel">เบอร์โทร</label>
-                  <input type="text" class="form-control" id="tel" name="tel" [textMask]="{mask: telMask}" [(ngModel)]="user.tel">
-                </div>
-                <div class="form-group">
-                  <label for="address">ที่อยู่</label>
-                  <textarea class="form-control" id="address" name="address" rows="4" [(ngModel)]="user.address"></textarea>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="card" style="height: 10em; margin-top: 1em;">
-                  <div class="card-body">
-                    <img *ngIf="url" [src]="url" class="rounded mb-3" width="100em;">
-                  </div>
-                </div>
-
-                <input style="display: none" type="file" (change)="addFile($event)" #fileInput>
-                <button type="button" class="btn px-4" (click)="fileInput.click()">เลือกรูปภาพ
-                </button>
-                <div *ngIf="selectedFile?.name" style="margin-top: 1em;">
-                  <p>{{selectedFile.name}}</p>
-                </div>
-                <div *ngIf="flash" style="margin-top: 1em;">
-                  <flash-messages></flash-messages>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" #closeBtn>ปิด</button>
-            <button type="submit" disabled={{isdisabled}} class="btn btn-success">ตกลง</button>
-          </div>
-        </form>
-      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">ปิด</button>
+          <button type="submit" disabled={{isdisabled}} class="btn btn-success">ตกลง</button>
+        </div>
+      </form>
     </div>
-  </div>
+  </ng-template>
+
 
 
   <!-- แก้ไขข้อมูล -->
-  <div id="myModal" class="modal fade" id="editModal" tabindex="0" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="row justify-content-center">
-            <h5 class="modal-title" id="putModalLabel" style="margin-left: 1em;">แก้ไขข้อมูล</h5>
-            <div *ngIf="isLoad" class="wrap-loading" style="margin-left: 2em;">
-              <div class="loading loading-1"></div>
+  <ng-template #edit>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="row justify-content-center">
+          <h5 class="modal-title" id="putModalLabel" style="margin-left: 1em;">แก้ไขข้อมูล</h5>
+          <div *ngIf="isLoad" class="wrap-loading" style="margin-left: 2em;">
+            <div class="loading loading-1"></div>
+          </div>
+        </div>
+      </div>
+      <form #formEdit="ngForm" (ngSubmit)="updateUser(formEdit)">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="email">อีเมลล์</label>
+                <input type="email" class="form-control" id="email2" name="email" [(ngModel)]="email">
+              </div>
+              <div class="form-group">
+                <label for="password">password</label>
+                <input type="password" class="form-control" id="password2" name="password" [(ngModel)]="password">
+              </div>
+              <div class="form-group">
+                <label for="fname">ชื่อ</label>
+                <input type="text" class="form-control" id="fname2" name="fname" [(ngModel)]="fname">
+              </div>
+              <div class="form-group">
+                <label for="lname">นามสกุล</label>
+                <input type="text" class="form-control" id="lname2" name="lname" [(ngModel)]="lname">
+              </div>
+              <div class="form-group">
+                <label for="tel">เบอร์โทร</label>
+                <input type="text" class="form-control" id="tel2" name="tel" [textMask]="{mask: telMask}" [(ngModel)]="tel">
+              </div>
+              <div class="form-group">
+                <label for="address">ที่อยู่</label>
+                <textarea class="form-control" id="address2" name="address" rows="4" [(ngModel)]="address"></textarea>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card" style="height: 10em; margin-top: 1em;">
+                <div class="card-body">
+                  <img *ngIf="url" [src]="url" class="rounded mb-3" width="100em;">
+                </div>
+              </div>
+
+              <input style="display: none" type="file" (change)="addFile($event)" #fileInput>
+              <button type="button" class="btn px-4" (click)="fileInput.click()">เลือกรูปภาพ
+              </button>
+              <div *ngIf="selectedFile?.name" style="margin-top: 1em;">
+                <p>{{selectedFile.name}}</p>
+              </div>
+              <div *ngIf="flash2" style="margin-top: 1em;">
+                <flash-messages></flash-messages>
+              </div>
             </div>
           </div>
         </div>
-        <form #formEdit="ngForm" (ngSubmit)="updateUser(formEdit)">
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-6">
-                <div class="form-group">
-                  <label for="email">อีเมลล์</label>
-                  <input type="email" class="form-control" id="email2" name="email" [(ngModel)]="email">
-                </div>
-                <div class="form-group">
-                  <label for="password">password</label>
-                  <input type="password" class="form-control" id="password2" name="password" [(ngModel)]="password">
-                </div>
-                <div class="form-group">
-                  <label for="fname">ชื่อ</label>
-                  <input type="text" class="form-control" id="fname2" name="fname" [(ngModel)]="fname">
-                </div>
-                <div class="form-group">
-                  <label for="lname">นามสกุล</label>
-                  <input type="text" class="form-control" id="lname2" name="lname" [(ngModel)]="lname">
-                </div>
-                <div class="form-group">
-                  <label for="tel">เบอร์โทร</label>
-                  <input type="text" class="form-control" id="tel2" name="tel" [textMask]="{mask: telMask}" [(ngModel)]="tel">
-                </div>
-                <div class="form-group">
-                  <label for="address">ที่อยู่</label>
-                  <textarea class="form-control" id="address2" name="address" rows="4" [(ngModel)]="address"></textarea>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="card" style="height: 10em; margin-top: 1em;">
-                  <div class="card-body">
-                    <img *ngIf="url" [src]="url" class="rounded mb-3" width="100em;">
-                  </div>
-                </div>
-
-                <input style="display: none" type="file" (change)="addFile($event)" #fileInput>
-                <button type="button" class="btn px-4" (click)="fileInput.click()">เลือกรูปภาพ
-                </button>
-                <div *ngIf="selectedFile?.name" style="margin-top: 1em;">
-                  <p>{{selectedFile.name}}</p>
-                </div>
-                <div *ngIf="flash2" style="margin-top: 1em;">
-                  <flash-messages></flash-messages>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" #closeBtnEdit>ปิด</button>
-            <button type="submit" disabled={{isdisabled}} class="btn btn-success">ตกลง</button>
-          </div>
-        </form>
-      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">ปิด</button>
+          <button type="submit" disabled={{isdisabled}} class="btn btn-success">ตกลง</button>
+        </div>
+      </form>
     </div>
-  </div>
+  </ng-template>
+
 
 
   <!-- delModal -->
-  <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content" style="margin: 0.5em;">
-        <div class="modal-body">
-          <div class="row justify-content-center">
-            <div style="text-align: center;">กด 'ตกลง' เพื่อยืนยันการลบ </div>
-            <div *ngIf="isLoad" class="wrap-loading" style="margin-left: 2em;">
-              <div class="loading loading-1"></div>
-            </div>
-          </div>
-          <hr>
-          <div class="row justify-content-center">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" #closeBtnDel>ปิด</button>
-            <button type="button" class="btn btn-primary" (click)="deleteUser()" style="margin-left: 1em;">ตกลง</button>
-          </div>
+  <ng-template #del>
+    <div class="modal-body">
+      <div class="row justify-content-center">
+        <div style="text-align: center;">กด 'ตกลง' เพื่อยืนยันการลบ </div>
+        <div *ngIf="isLoad" class="wrap-loading" style="margin-left: 2em;">
+          <div class="loading loading-1"></div>
         </div>
       </div>
+      <hr>
+      <div class="row justify-content-center">
+        <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">ปิด</button>
+        <button type="button" class="btn btn-primary" (click)="deleteUser()" style="margin-left: 1em;">ตกลง</button>
+      </div>
     </div>
-  </div>
+  </ng-template>
 
-  <!--
 
-  <div class="flex-container-2">
-  <div *ngIf="isLogin" class="alert alert-danger" role="alert" style="height: 3em; margin: 0.5em;">
-    กำลังเข้าสู่ระบบ</div>
-  <div *ngIf="isNull" class="alert alert-danger" role="alert" style="height: 3em; margin: 0.5em;">
-    โปรดใส่ข้อมูลให้ครบ!</div>
-  <div *ngIf="isError" class="alert alert-danger" role="alert" style="height: 3em; margin: 0.5em;">
-    {{textError}}</div>
-  <div *ngIf="" class="alert alert-danger" role="alert" style="height: 3em; margin: 0.5em;">
-    ไม่มีข้อมูลในระบบ! </div>
-</div>
-
--->
 
 </div>
