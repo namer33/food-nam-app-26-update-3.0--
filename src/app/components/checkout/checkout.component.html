@@ -1,0 +1,213 @@
+<div class="animated fadeIn">
+  <div class="b">
+    <div class="card">
+      <div class="card-header" style="height: 4em;">
+        <div class="row justify-content-center">
+          <h5>ชำระเงิน</h5>
+          <div *ngIf="isLoad" class="wrap-loading">
+            <div class="loading1 loading-1"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <!-- list-->
+          <div class="col-md-8 col-lg-8">
+            <div class="card">
+              <div class="row justify-content-center" style="margin-top: 1em;">
+                <div class="form-group">
+                  <label for="name">ชื่อผู้รับสินค้า</label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" [(ngModel)]="user.fname" placeholder="ชื่อ">
+                    </div>
+                    <div class="col">
+                      <input type="text" class="form-control" [(ngModel)]="user.lname" placeholder="นามสกุล">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row justify-content-center">
+                <div class="form-group">
+                  <label for="tel">เบอร์โทร</label>
+                  <input type="text" class="form-control" id="tel" [textMask]="{mask: telMask}" [(ngModel)]="user.tel" placeholder="(089)-000-0000">
+                </div>
+                <div class="form-group" style="margin-left: 2em;">
+                  <label for="landmarks">จุดสังเกตใกล้ที่จัดส่ง</label>
+                  <input type="text" class="form-control" id="landmarks" [(ngModel)]="user.landmarks" placeholder="จุดสังเกต">
+                </div>
+              </div>
+              <div class="row justify-content-center">
+                <div class="form-group" style="width: 27em; height: 5em;">
+                  <label for="address">ที่อยู่</label>
+                  <textarea class="form-control" id="address" [(ngModel)]="user.address"></textarea>
+                </div>
+              </div>
+              <div class="row justify-content-center">
+                <fieldset disabled>
+                  <div class="form-group" style="width: 27em; margin-top: 1em;">
+                    <label for="payment">วิธีชำระเงิน</label>
+                    <input type="text" class="form-control" id="payment" [(ngModel)]="order.payment" placeholder="เงินสด (จ่ายเมื่อรับสินค้า)">
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+
+          <!-- main-->
+          <div class="col-md-4 col-lg-4">
+            <div class="card">
+              <div class="main">
+                <div class="row">
+                  <div class="col align-self-start">
+                    <h5>{{cartService.countAll}} รายการ</h5>
+                  </div>
+                  <div class="col align-self-end">
+                    <h5>฿{{cartService.total}}.00</h5>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col align-self-start">
+                    ค่าจัดส่ง
+                  </div>
+                  <div class="col align-self-end">
+                    <h5>฿{{cartService.delivery_charge}}.00</h5>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col align-self-start">
+                    <h5>ยอดรวมทั้งหมด</h5>
+                  </div>
+                  <div class="col align-self-end">
+                    <h5>฿{{cartService.total+cartService.delivery_charge}}.00</h5>
+                  </div>
+                </div>
+                <div class="row justify-content-center">
+                  <button type="submit" class="btn btn-outline-success" routerLink="/food-list">เพิ่มรายการอาหาร</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ทำการสั่งซื้อ -->
+            <div class="row justify-content-center">
+              <button *ngIf="!userService.authState" type="button" class="btn btn-danger" data-toggle="modal" data-target="#putModal" data-whatever="@getbootstrap">ทำการสั่งซื้อ (฿{{cartService.total}}.00)</button>
+              <button *ngIf="userService.authState" disabled={{isdisabled}} type="submit" class="btn btn-success" (click)="myConfirm()">ทำการสั่งซื้อ</button>
+            <button style="display: none;" #btn data-toggle="modal" data-target="#confirmModal"></button>
+            </div>
+            <div class="row justify-content-center" style="margin-top: 2em;">
+              <div  *ngIf="isNull" class="alert alert-danger" role="alert">
+                โปรดใส่ข้อมูลให้ครบ!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="putModal" tabindex="-1" role="dialog" aria-labelledby="putModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="card text-center">
+        <div class="card-header">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" data-toggle="tab" href="#tab1" role="tab">
+                เข้าสู่ระบบ
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#tab2" role="tab">
+                สมัครสมาชิก
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Tab panes-->
+      <div class="tab-content">
+        <div class="tab-pane p-3 active" id="tab1" role="tabpanel">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="icon-envelope"></i>
+              </span>
+            </div>
+            <input type="email" name="email" id="emailc" [(ngModel)]="email" class="form-control" placeholder="Email">
+          </div>
+          <div class="input-group mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="icon-lock"></i>
+              </span>
+            </div>
+            <input type="password" name="password" id="passwordc" [(ngModel)]="password" class="form-control" placeholder="Password">
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <button style="display: none;" #closeBtn data-dismiss="modal"></button>
+              <button type="submit" disabled={{isdisabled}} class="btn btn-primary px-4" (click)="onSignIn()">เข้าสู่ระบบ
+              </button>
+            </div>
+            <div class="col-8  text-right">
+              <button type="button" class="btn btn-link px-0">ลืมรหัสผ่าน</button>
+            </div>
+          </div>
+
+        </div>
+        <div class="tab-pane p-3" id="tab2" role="tabpanel">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="icon-envelope"></i>
+              </span>
+            </div>
+            <input type="email" name="email" id="emailcc" [(ngModel)]="email" class="form-control" placeholder="Email">
+          </div>
+          <div class="input-group mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="icon-lock"></i>
+              </span>
+            </div>
+            <input type="password" name="password" id="passwordcc" [(ngModel)]="password" class="form-control" placeholder="Password">
+          </div>
+          <button style="display: none;" #closeBtn data-dismiss="modal"></button>
+          <button type="submit" disabled={{isdisabled}} class="btn btn-primary px-5" (click)="onSignUp()">ตกลง
+          </button>
+
+        </div>
+      </div>
+    </div>
+    <div *ngIf="isLoad" class="wrap-loading" style="margin-top: 2em;">
+      <div class="loading loading-1"></div>
+    </div>
+    <div class="row justify-content-center" style="margin-top: 1em;">
+      <flash-messages></flash-messages>
+    </div>
+  </div>
+</div>
+
+
+<!-- confirmModal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="margin: 0.5em;">
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div style="text-align: center;">กด 'ตกลง' เพื่อยืนยันการสั่งซื้อ </div>
+        </div>
+        <hr>
+        <div class="row justify-content-center">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="onClickAddOrder()" style="margin-left: 1em;">ตกลง</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
